@@ -3,8 +3,6 @@ package com.shpp.p2p.cs.ohololobov.assignment10.token;
 import com.shpp.p2p.cs.ohololobov.assignment10.AppConfig;
 import com.shpp.p2p.cs.ohololobov.assignment10.common.CharUtils;
 import org.eclipse.collections.api.list.primitive.MutableDoubleList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -15,7 +13,6 @@ import java.util.List;
  */
 public record Decimal(double value) implements Operand {
     public static final String INVALID_DECIMAL_SIGNATURE_TEMPLATE = "Invalid decimal in expression \"%s\" at position %d";
-    private static final Logger log = LoggerFactory.getLogger(Decimal.class);
 
     /**
      * The method adds decimal in list of tokens in postfix notation

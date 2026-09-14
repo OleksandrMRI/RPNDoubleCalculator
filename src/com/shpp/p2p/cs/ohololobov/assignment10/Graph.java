@@ -7,8 +7,6 @@ import com.shpp.p2p.cs.ohololobov.assignment10.expressionparser.LexerContext;
 import com.shpp.p2p.cs.ohololobov.assignment10.expressionparser.RPNExpressionParser;
 import com.shpp.p2p.cs.ohololobov.assignment10.service.VectorEvaluator;
 import com.shpp.p2p.cs.ohololobov.assignment10.token.RPNToken;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +31,11 @@ public class Graph {
     private static final String REQUEST_TO_USER = "Enter mathematical expression: ";
     private static final String INVALID_EXPRESSION_MSG = "Invalid expression: \"%s\". Program starts with default expression \n";
     public static final String INVALID_VALUE_OF_VARIABLES_MSG = "Expression for graph must contains only one variable";
-    private static final Logger log = LoggerFactory.getLogger(Graph.class);
     private static double[] defaultValue;
     private static double[] variableValues;
     private static Graph instance;
 
-    static void main(String[] args) {
+    static void main() {
         Graph graph = Graph.getInstance();
         graph.run();
     }

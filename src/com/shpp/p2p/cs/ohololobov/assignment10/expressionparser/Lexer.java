@@ -110,7 +110,7 @@ public class Lexer {
                     }
                 }
             }
-            ;
+
             log.debug("tokensListInPostfixNotation: {}", tokensListInPostfixNotation);
             log.debug("currentIndex: {}", currentIndex);
             Validator.validateBrackets(bracketCounter, isCheckingAfterParsing);

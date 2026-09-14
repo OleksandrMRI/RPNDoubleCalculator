@@ -30,16 +30,6 @@ public class CharUtils {
         return ch >= '0' && ch <= '9';
     }
 
-    /**
-     * the method transforms char to string
-     *
-     * @param ch char to transform
-     * @return string representation of ch
-     */
-    public static String getStringFromChar(char ch) {
-        return ch + "";
-    }
-
     public static boolean isLetterIgnoreCase(char ch) {
         return isLetter(ch) ||(ch >= 'A' && ch <= 'Z');
     }

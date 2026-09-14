@@ -7,7 +7,7 @@ package com.shpp.p2p.cs.ohololobov.assignment10.token;
 public sealed interface OperatorToken extends Token permits Operator, UnaryMinus {
     default void validateNextChar(String expression, int charPosition) {
         char nextChar = expression.charAt(charPosition);
-        if (Operator.asMap().containsKey("" + nextChar) || nextChar == ')' || nextChar == ',')
+        if (Operator.asMap().containsKey(nextChar) || nextChar == ')' || nextChar == ',')
             Token.throwInvalidNextCharException(nextChar, expression, charPosition);
     }
 }

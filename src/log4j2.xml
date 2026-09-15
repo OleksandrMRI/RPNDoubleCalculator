@@ -17,7 +17,7 @@
         </RollingFile>
     </Appenders>
     <Loggers>
-        <Logger name="com.shpp.p2p.cs.ohololobov.assignment10" level="debug" >
+        <Logger name="com.shpp.p2p.cs.ohololobov.assignment10" level="off" >
             <AppenderRef ref="LogToConsole"/>
         </Logger>
         <!--Logger name="com.shpp.p2p.cs.ohololobov.assignment7" level="debug">

@@ -61,7 +61,11 @@ public class ConsoleOutputHandler implements OutputHandler {
             }
 
             MutableDoubleList[] variablesValues = result.variablesValues();
-            for (int i = 0; i < variablesValues[0].size(); i++) {
+            int numberOfVariableBatches = variablesValues[0].size();
+            for (int i = 1; i < variablesValues.length; i++) {
+                numberOfVariableBatches = Math.min(numberOfVariableBatches, variablesValues[i].size());
+            }
+            for (int i = 0; i < numberOfVariableBatches; i++) {
                 for (int j = 0; j < variablesValues.length; j++) {
                     System.out.println(VARIABLES_TEMPLATE + variableNames[j] + " = " + variablesValues[j].get(i));
                 }

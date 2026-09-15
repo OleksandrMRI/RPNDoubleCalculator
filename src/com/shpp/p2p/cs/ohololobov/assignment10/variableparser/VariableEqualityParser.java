@@ -49,7 +49,7 @@ public class VariableEqualityParser {
     public MutableDoubleList[] parse(List<String> equalities, MutableCharIntMap variablesInExpression) {
         MutableDoubleList[] variablesValues = null;
         if (equalities != null) {
-            variablesValues = new MutableDoubleList[variablesInExpression.size()];
+            variablesValues = new DoubleArrayList[variablesInExpression.size()];
             log.debug("variablesInExpression: {}", variablesInExpression);
             log.debug("equalities: {}", equalities);
 
@@ -66,7 +66,7 @@ public class VariableEqualityParser {
                 }
             }
             Validator.checkAllVariablesPresence(variablesInExpression, variablesValues);
-            Validator.validateVariableValuesQuantities(variablesValues);
+//            Validator.validateVariableValuesQuantities(variablesValues);
         }
         return variablesValues;
     }

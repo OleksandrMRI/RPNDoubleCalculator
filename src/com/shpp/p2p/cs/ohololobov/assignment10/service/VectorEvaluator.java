@@ -79,15 +79,17 @@ public class VectorEvaluator {
                 }
             } else {
                 variablesBatch = new double[numberOfVariables];
-                for (int i = 1; i < numberOfVariables; i++) {
+                for (int i = 1; i < variablesValuesDataBase.length; i++) {
                     numberOfVariableBatches = Math.min(numberOfVariableBatches, variablesValuesDataBase[i].size());
                 }
+
                 for (int i = 0; i < numberOfVariableBatches; i++) {
                     for (int j = 0; j < variablesBatch.length; j++) {
                         variablesBatch[j] = variablesValuesDataBase[j].get(i);
                     }
                     results[i] = calculator.evaluateBatch(rpnTokensList, variablesBatch);
                 }
+
 
             }
         }

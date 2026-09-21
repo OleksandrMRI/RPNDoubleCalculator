@@ -13,6 +13,9 @@ public class VariableEqualityNormalizer {
      */
     private static VariableEqualityNormalizer instance;
 
+    private VariableEqualityNormalizer() {
+    }
+
     /**
      * /**
      * singleton for creating instance of class VariableEqualityNormalizer as Singleton

@@ -28,6 +28,9 @@ public class RPNExpressionParser {
      */
     private static RPNExpressionParser instance;
 
+    private RPNExpressionParser() {
+    }
+
     /**
      * singleton for creating instance of class RPNExpressionParser as Singleton
      *
@@ -174,7 +177,7 @@ public class RPNExpressionParser {
     private static void transferIfMathematicalOperation(List<RPNToken> tokensInRPNNotation, Deque<Token> stackBuffer, RPNToken currentToken, int currentRank) {
         log.debug("stack: {}", stackBuffer);
         transferToken(stackBuffer, tokensInRPNNotation);
-        while (!stackBuffer.isEmpty() && stackBuffer.peekLast().rank() >= currentRank) {
+        while (!stackBuffer.isEmpty() && stackBuffer.peekLast().rank() != OPENING_BRACKET.rank() && stackBuffer.peekLast() != null && stackBuffer.peekLast().rank() >= currentRank) {
             transferToken(stackBuffer, tokensInRPNNotation);
             log.debug("tokensInRPNNotation  {}", tokensInRPNNotation);
         }

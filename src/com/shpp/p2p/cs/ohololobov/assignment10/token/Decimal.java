@@ -1,7 +1,6 @@
 package com.shpp.p2p.cs.ohololobov.assignment10.token;
 
 import com.shpp.p2p.cs.ohololobov.assignment10.AppConfig;
-import com.shpp.p2p.cs.ohololobov.assignment10.common.CharUtils;
 import org.eclipse.collections.api.list.primitive.MutableDoubleList;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public record Decimal(double value) implements Operand {
             lastChar = currentChar;
             currentIndex++;
         } while (currentIndex < expressionToPars.length()
-                && (CharUtils.isDigit(currentChar = expressionToPars.charAt(currentIndex)) || currentChar == AppConfig.DECIMAL_SEPARATOR));
+                && (Character.isDigit(currentChar = expressionToPars.charAt(currentIndex)) || currentChar == AppConfig.DECIMAL_SEPARATOR));
 
         validateDecimalLastChar(lastChar, expressionToPars, startDecimalIndex);
 

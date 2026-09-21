@@ -1,6 +1,5 @@
 package com.shpp.p2p.cs.ohololobov.assignment10.expressionparser;
 
-import com.shpp.p2p.cs.ohololobov.assignment10.common.CharUtils;
 import com.shpp.p2p.cs.ohololobov.assignment10.service.Validator;
 import com.shpp.p2p.cs.ohololobov.assignment10.token.*;
 import org.eclipse.collections.api.map.primitive.MutableCharIntMap;
@@ -25,6 +24,10 @@ public class Lexer {
      * instance of Lexer
      */
     private static Lexer instance;
+
+    private Lexer() {
+    }
+
     /**
      * instance of logger
      */
@@ -64,48 +67,55 @@ public class Lexer {
             currentChar = expressionToPars.charAt(currentIndex);
             int nextIndex = currentIndex + 1;
             log.debug("currentChar: {}", currentChar);
-            switch (currentChar) {
-                case '+' -> currentIndex = PLUS.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
-                case '-' -> {
-                    if (UnaryMinus.isUnaryMinus(expressionToPars, currentIndex)) {
-                        currentIndex = UnaryMinus.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
-                    } else {
-                        currentIndex = SUBTRACTION.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+            if (Character.isDigit(currentChar)) {
+                log.debug("currentChar in decimal: {}", currentChar);
+                log.debug("currentIndex in decimal: {}", currentIndex);
+                currentIndex = Decimal.addToken(expressionToPars, currentIndex, currentChar, tokensListInPostfixNotation);
+            } else if (Character.isLetter(currentChar)) {
+                if (nextIndex == expressionToPars.length() || !Character.isLetter(expressionToPars.charAt(nextIndex))) {
+                    log.info("variable = currentChar: {}", currentChar);
+                    if (variablesInExpression == null) {
+                        variablesInExpression = new CharIntHashMap();
                     }
+                    boolean isVariableAdded = variablesInExpression.containsKey(currentChar);
+                    if (!isVariableAdded && !variablesInExpression.isEmpty()) slotIndex++;
+                    if (!isVariableAdded) {
+                        variablesInExpression.put(currentChar, slotIndex);
+                    }
+                    log.info("variableInExpression: {}", variablesInExpression);
+                    slotIndex = variablesInExpression.get(currentChar);
+                    currentIndex = Variable.addToken(expressionToPars, currentIndex, currentChar, tokensListInPostfixNotation, slotIndex);
+                    log.info("slotIndex in Lexer: {}", slotIndex);
+                } else {
+                    currentIndex = Function.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
                 }
-                case '/' ->
-                        currentIndex = DIVISION.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
-                case '*' ->
-                        currentIndex = MULTIPLICATION.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
-                case '^' -> currentIndex = POW.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
-                case '(' -> {
-                    bracketCounter++;
-                    currentIndex = OPENING_BRACKET.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
-                }
-                case ')' -> {
-                    bracketCounter--;
-                    currentIndex = CLOSING_BRACKET.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
-                }
-                default -> {
-                    if (CharUtils.isDigit(currentChar)) {
-                        log.debug("currentChar in decimal: {}", currentChar);
-                        log.debug("currentIndex in decimal: {}", currentIndex);
-                        currentIndex = Decimal.addToken(expressionToPars, currentIndex, currentChar, tokensListInPostfixNotation);
-                    } else if (CharUtils.isLetterIgnoreCase(currentChar)) {
-                        if (nextIndex == expressionToPars.length() || !CharUtils.isLetter(expressionToPars.charAt(nextIndex))) {
-                            currentIndex = Variable.addToken(expressionToPars, currentIndex, currentChar, tokensListInPostfixNotation, slotIndex);
-                            if (variablesInExpression == null) {
-                                variablesInExpression = new CharIntHashMap();
-                            }
-                            if (!variablesInExpression.containsKey(currentChar)) {
-                                variablesInExpression.put(currentChar, slotIndex);
-                                log.info("variableInExpression: {}", variablesInExpression);
-                            }
-                            slotIndex++;
+            } else {
+                switch (currentChar) {
+                    case '+' ->
+                            currentIndex = PLUS.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                    case '-' -> {
+                        if (UnaryMinus.isUnaryMinus(expressionToPars, currentIndex)) {
+                            currentIndex = UnaryMinus.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
                         } else {
-                            currentIndex = Function.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                            currentIndex = SUBTRACTION.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
                         }
-                    } else {
+                    }
+                    case '/' ->
+                            currentIndex = DIVISION.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                    case '*' ->
+                            currentIndex = MULTIPLICATION.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                    case '^' ->
+                            currentIndex = POW.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                    case '(' -> {
+                        bracketCounter++;
+                        currentIndex = OPENING_BRACKET.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                    }
+                    case ')' -> {
+                        bracketCounter--;
+                        currentIndex = CLOSING_BRACKET.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                    }
+                    default -> {
+
                         throwUnexpectedTokenException(expressionToPars, currentIndex);
                     }
                 }
@@ -113,10 +123,12 @@ public class Lexer {
 
             log.debug("tokensListInPostfixNotation: {}", tokensListInPostfixNotation);
             log.debug("currentIndex: {}", currentIndex);
+            log.info("bracketCounter inside: {}", bracketCounter);
             Validator.validateBrackets(bracketCounter, isCheckingAfterParsing);
         }
         log.debug("variableInExpression: {}", variablesInExpression);
         isCheckingAfterParsing = true;
+        log.info("bracketCounter outside: {}", bracketCounter);
         Validator.validateBrackets(bracketCounter, isCheckingAfterParsing);
         log.debug("tokensListInPostfixNotation: {}", tokensListInPostfixNotation);
         return new LexerContext(tokensListInPostfixNotation, variablesInExpression);

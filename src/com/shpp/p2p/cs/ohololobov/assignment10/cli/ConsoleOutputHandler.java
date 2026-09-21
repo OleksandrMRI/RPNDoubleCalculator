@@ -26,6 +26,9 @@ public class ConsoleOutputHandler implements OutputHandler {
      */
     private static ConsoleOutputHandler instance;
 
+    private ConsoleOutputHandler() {
+    }
+
     /**
      * singleton for creating instance of class ConsoleOutputHandler as Singleton
      *

@@ -16,6 +16,9 @@ public class Calculator {
      */
     private static Calculator instance;
 
+    private Calculator() {
+    }
+
     /**
      * singleton for creating instance of class Calculator as Singleton
      *

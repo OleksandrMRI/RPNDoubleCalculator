@@ -17,7 +17,6 @@ import java.io.IOException;
  * Program return result output vector as double[]
  */
 public class Assignment10 {
-
     /**
      * Application entry point.Instantiates the calculator runner with raw arguments
      * trigger execution, and routs the generated results to output
@@ -29,7 +28,7 @@ public class Assignment10 {
         CalculatorEngine doubleCalculator = DoubleCalculator.getInstance();
         ResultsDTO results = doubleCalculator.runCalculator(args);
 
-        OutputHandler consoleOutputHandler = new ConsoleOutputHandler();
+        OutputHandler consoleOutputHandler = ConsoleOutputHandler.getInstance();
         consoleOutputHandler.send(results);
         System.out.println(results.calculationResults()[0]);
     }

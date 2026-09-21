@@ -1,6 +1,5 @@
 package com.shpp.p2p.cs.ohololobov.assignment10.token;
 
-import com.shpp.p2p.cs.ohololobov.assignment10.common.CharUtils;
 import com.shpp.p2p.cs.ohololobov.assignment10.exception.MissingOperandException;
 import org.eclipse.collections.api.list.primitive.MutableDoubleList;
 import org.slf4j.Logger;
@@ -95,7 +94,7 @@ public enum Function implements FunctionCalculated, RPNToken {
         do {
             currentIndex++;
         } while (currentIndex < expressionToPars.length()
-                && (CharUtils.isLetterIgnoreCase(expressionToPars.charAt(currentIndex)) || (CharUtils.isDigit(expressionToPars.charAt(currentIndex)))));
+                && (Character.isLetter(expressionToPars.charAt(currentIndex)) || (Character.isDigit(expressionToPars.charAt(currentIndex)))));
         if (currentIndex < expressionToPars.length())
             Function.validateNextChar(expressionToPars, currentIndex);
 

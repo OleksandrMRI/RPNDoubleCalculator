@@ -5,6 +5,7 @@ import com.shpp.p2p.cs.ohololobov.assignment10.service.Validator;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -39,13 +40,10 @@ public class ArgsDispatcher implements Dispatcher {
     @Override
     public InputRawDataDTO route(String[] dataArray) throws IOException {
         Validator.isArgsEmpty(dataArray);
-        String expression = dataArray[AppConfig.EXPRESSION_INDEX];
+        String expression = dataArray[0];
         List<String> equalities = null;
         if (dataArray.length > 1) {
-            equalities = new ArrayList<>();
-            for (int i = 1; i < dataArray.length; i++) {
-                equalities.add(dataArray[i]);
-            }
+            equalities = new ArrayList<>(Arrays.asList(dataArray).subList(1, dataArray.length));
         }
         return new InputRawDataDTO(expression, equalities);
     }

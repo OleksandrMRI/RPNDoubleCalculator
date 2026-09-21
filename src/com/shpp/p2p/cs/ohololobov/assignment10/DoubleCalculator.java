@@ -19,6 +19,9 @@ import java.util.List;
 public class DoubleCalculator implements CalculatorEngine {
     private static DoubleCalculator instance;
 
+    private DoubleCalculator() {
+    }
+
     public static DoubleCalculator getInstance() {
         if (instance == null) {
             instance = new DoubleCalculator();

@@ -1,7 +1,5 @@
 package com.shpp.p2p.cs.ohololobov.assignment10.token;
 
-import com.shpp.p2p.cs.ohololobov.assignment10.common.CharUtils;
-
 import java.util.List;
 
 /**
@@ -16,7 +14,7 @@ public enum Bracket implements Token {
          */
         public void validateNextChar(String expression, int charPosition) {
             char nextChar = expression.charAt(charPosition);
-            if (nextChar != '-' && !CharUtils.isLetter(nextChar) && !CharUtils.isDigit(nextChar) && nextChar != '(')
+            if (nextChar != '-' && !Character.isLetter(nextChar) && !Character.isDigit(nextChar) && nextChar != '(')
                 Token.throwInvalidNextCharException(nextChar, expression, charPosition);
         }
 
@@ -30,7 +28,7 @@ public enum Bracket implements Token {
          */
         public void validateNextChar(String expression, int charPosition) {
             char nextChar = expression.charAt(charPosition);
-            if (CharUtils.isLetter(nextChar) || CharUtils.isDigit(nextChar) || nextChar == '(')
+            if (Character.isLetter(nextChar) || Character.isDigit(nextChar) || nextChar == OPENING_BRACKET.value)
                 Token.throwInvalidNextCharException(nextChar, expression, charPosition);
         }
 

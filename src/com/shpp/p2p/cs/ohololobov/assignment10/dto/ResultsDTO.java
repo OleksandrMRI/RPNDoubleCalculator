@@ -1,6 +1,7 @@
 package com.shpp.p2p.cs.ohololobov.assignment10.dto;
 
 import org.eclipse.collections.api.list.primitive.MutableDoubleList;
+import org.eclipse.collections.api.map.primitive.MutableCharIntMap;
 
 /**
  * DTO contains results of job of run():
@@ -19,5 +20,6 @@ import org.eclipse.collections.api.list.primitive.MutableDoubleList;
  *                           and collections positions in the variables values array.
  */
 public record ResultsDTO(String expression, double[] calculationResults,
-                         MutableDoubleList[] variablesValues, org.eclipse.collections.api.map.primitive.MutableCharIntMap variablesSlots) {
+                         MutableDoubleList[] variablesValues,
+                         MutableCharIntMap variablesSlots) {
 }

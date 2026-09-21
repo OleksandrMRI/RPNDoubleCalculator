@@ -84,7 +84,6 @@ class VectorEvaluatorTest {
 
     private static Stream<Arguments> preparingValuesForCalculateWithFunctionTest() {
         return Stream.of(
-
                 Arguments.of(
                         new double[]{10},
                         getRpnTokensList(

@@ -48,7 +48,7 @@ class RPNExpressionParserTest {
                 ),
                 Arguments.of("log10(a)",
                         List.of(
-                                new Variable('a',0),
+                                new Variable('a', 0),
                                 Function.LOG10
                         )
                 ),
@@ -59,7 +59,7 @@ class RPNExpressionParserTest {
                                 new Decimal(2),
                                 Operator.POW,
                                 Operator.POW
-                                )
+                        )
                 ),
                 Arguments.of("-(30/5)",
                         List.of(
@@ -74,7 +74,7 @@ class RPNExpressionParserTest {
                         List.of(
                                 new Decimal(-1),
                                 new Decimal(3),
-                                new Variable('a',0),
+                                new Variable('a', 0),
                                 new Decimal(5),
                                 new Decimal(60),
                                 Function.COS,
@@ -90,8 +90,8 @@ class RPNExpressionParserTest {
     @ParameterizedTest
     @MethodSource("stringsToTokensListMatches")
     void parseTest(String expression, List<Token> tokens) {
-        LexerContext lexerContext = new Lexer().tokenize(expression);
-        List<RPNToken> expectedListToken= new RPNExpressionParser().parse(lexerContext.tokens());
+        LexerContext lexerContext = Lexer.getInstance().tokenize(expression);
+        List<RPNToken> expectedListToken = RPNExpressionParser.getInstance().parse(lexerContext.tokens());
         assertEquals(tokens, expectedListToken);
     }
 }

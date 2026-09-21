@@ -1,6 +1,5 @@
 package com.shpp.p2p.cs.ohololobov.assignment10.expressionparser;
 
-import com.shpp.p2p.cs.ohololobov.assignment10.common.CharUtils;
 import com.shpp.p2p.cs.ohololobov.assignment10.token.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +14,10 @@ public class ExpressionNormalizer {
      * private variable for SingleTone pattern implementation
      */
     private static ExpressionNormalizer instance;
+
+    private ExpressionNormalizer() {
+    }
+
     /**
      * Instance of Logger
      */
@@ -42,8 +45,8 @@ public class ExpressionNormalizer {
      */
 
     public String normalize(String rowExpression) {
-        String stringWithoutSpacesInLowerCase = rowExpression.replace(" ", "");
-        return addMultiplicationSing(stringWithoutSpacesInLowerCase);
+        String stringWithoutSpaces = rowExpression.replace(" ", "");
+        return addMultiplicationSing(stringWithoutSpaces);
     }
 
     /**
@@ -87,7 +90,7 @@ public class ExpressionNormalizer {
      * @return true, if checked char letter or '('
      */
     private boolean isLetterOrOpeningBracketAfterDecimal(char currentChar, char nextChar, int nextIndex, String expression) {
-        return (CharUtils.isDigit(currentChar) && (CharUtils.isLetter(nextChar) || nextChar == '(')
+        return (Character.isDigit(currentChar) && (Character.isLetter(nextChar) || nextChar == '(')
                 && !expression.substring(0, nextIndex).toLowerCase(Locale.ROOT).matches(".*" + Function.mathFunctionsToStringWithOrSeparatorRegEx()));
     }
 
@@ -111,7 +114,7 @@ public class ExpressionNormalizer {
      * @return true, if next checked char is '(' and precious is not a letter
      */
     private boolean isOpeningBracketAfterVariableInsideTheExpression(char currentChar, char nextChar, char previousChar) {
-        return !CharUtils.isLetter(previousChar) && CharUtils.isLetter(currentChar) && nextChar == '(';
+        return !Character.isLetter(previousChar) && Character.isLetter(currentChar) && nextChar == '(';
     }
 
     /**
@@ -122,6 +125,6 @@ public class ExpressionNormalizer {
      * @return true, if next checked char is '('
      */
     private boolean isOpeningBracketAfterVariableAtStartTheExpression(char currentChar, char nextChar) {
-        return CharUtils.isLetter(currentChar) && nextChar == '(';
+        return Character.isLetter(currentChar) && nextChar == '(';
     }
 }

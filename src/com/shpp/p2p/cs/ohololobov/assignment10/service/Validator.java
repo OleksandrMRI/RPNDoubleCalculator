@@ -1,7 +1,6 @@
 package com.shpp.p2p.cs.ohololobov.assignment10.service;
 
 import com.shpp.p2p.cs.ohololobov.assignment10.AppConfig;
-import com.shpp.p2p.cs.ohololobov.assignment10.common.CharUtils;
 import com.shpp.p2p.cs.ohololobov.assignment10.exception.MissingVariableException;
 import org.eclipse.collections.api.iterator.CharIterator;
 import org.eclipse.collections.api.list.primitive.MutableCharList;
@@ -34,16 +33,15 @@ public class Validator {
 
 
     public static void isArgsEmpty(String[] arr) throws IOException {
-        if (arr.length == VARIABLE_NAME_INDEX) {
+        if (arr.length == 0) {
             throw new IOException(NO_ARGUMENTS_IN_MAIN_ARGS_MSG);
         }
     }
 
-
     public static void validateStartOfExpression(String expression) {
-        char firstChar = expression.charAt(VARIABLE_NAME_INDEX);
+        char firstChar = expression.charAt(0);
         String partOfExpression = "start";
-        if (!expression.startsWith("-") && !CharUtils.isLetter(firstChar) && !CharUtils.isDigit(firstChar) && !expression.startsWith("("))
+        if (!expression.startsWith("-") && !Character.isLetter(firstChar) && !Character.isDigit(firstChar) && !expression.startsWith("("))
             throw new IllegalArgumentException(
                     String.format(START_END_ILLEGAL_ARGUMENT_TEMPLATE, firstChar, partOfExpression, expression)
             );
@@ -52,7 +50,7 @@ public class Validator {
     public static void validateEndOfExpression(String expression) {
         char lastChar = expression.charAt(expression.length() - VARIABLE_VALUE_INDEX);
         String partOfExpression = "end";
-        if (!expression.endsWith(")") && !CharUtils.isLetter(lastChar) && !CharUtils.isDigit(lastChar))
+        if (!expression.endsWith(")") && !Character.isLetter(lastChar) && !Character.isDigit(lastChar))
             throw new IllegalArgumentException(
                     String.format(START_END_ILLEGAL_ARGUMENT_TEMPLATE, lastChar, partOfExpression, expression)
             );
@@ -75,7 +73,7 @@ public class Validator {
     public static void validateVariableEquality(String[] variableEqualityArray) {
         if (variableEqualityArray.length != VALID_EQUALITY_ARRAY_LENGTH
                 || variableEqualityArray[VARIABLE_NAME_INDEX].length() != VALID_VARIABLE_NAME_LENGTH
-                || !CharUtils.isLetter(variableEqualityArray[VARIABLE_NAME_INDEX].charAt(VARIABLE_NAME_INDEX))
+                || !Character.isLetter(variableEqualityArray[VARIABLE_NAME_INDEX].charAt(0))
                 || !variableEqualityArray[VARIABLE_VALUE_INDEX].matches(Validator.VARIABLE_DECIMAL_REG_EX))
             throw new IllegalArgumentException(INCORRECT_VARIABLE_EQUALITY_MSG);
     }

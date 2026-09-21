@@ -121,11 +121,10 @@ class LexerTest {
         );
     }
 
-
     @ParameterizedTest
     @MethodSource("stringsToTokensListMatches")
     void parseTest(String expression, List<Token> expectedTokens) {
-        List<Token> resultTokens = new Lexer().tokenize(expression).tokens();
+        List<Token> resultTokens = Lexer.getInstance().tokenize(expression).tokens();
         assertEquals(expectedTokens, resultTokens);
     }
 
@@ -134,7 +133,7 @@ class LexerTest {
     void parseExceptionTest(String expression, String exceptionMSG) {
         Exception exception = assertThrows(
                 IllegalArgumentException.class,
-                () -> new Lexer().tokenize(expression));
+                () -> Lexer.getInstance().tokenize(expression));
         assertEquals(exceptionMSG, exception.getMessage());
     }
 

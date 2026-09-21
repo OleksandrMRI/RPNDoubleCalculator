@@ -24,6 +24,9 @@ public class VariableEqualityParser {
      */
     private static VariableEqualityParser variableParser;
 
+    private VariableEqualityParser() {
+    }
+
     /**
      * singleton for creating instance of class VariableEqualityParser as Singleton
      *

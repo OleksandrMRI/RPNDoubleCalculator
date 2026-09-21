@@ -40,6 +40,9 @@ public class Graph {
         graph.run();
     }
 
+    private Graph() {
+    }
+
     public static Graph getInstance() {
         if (instance == null) {
             instance = new Graph();
@@ -106,14 +109,14 @@ public class Graph {
         double[] offsetYValues;
         try {
             offsetYValues = getOffsetYValuesArray(normalizedExpression, offsetXValues);
-            GraphContext.normalizedExpression =EXPRESSION;
+            GraphContext.normalizedExpression = EXPRESSION;
         } catch (Exception e) {
             System.out.printf(INVALID_EXPRESSION_MSG, normalizedExpression);
             if (defaultValue == null) {
                 defaultValue = getOffsetYValuesArray(EXPRESSION, offsetXValues);
             }
             offsetYValues = defaultValue;
-            GraphContext.normalizedExpression =EXPRESSION;
+            GraphContext.normalizedExpression = EXPRESSION;
         }
         return offsetYValues;
     }
@@ -127,7 +130,8 @@ public class Graph {
 
         return lexerContext;
     }
-    private static class GraphContext{
+
+    private static class GraphContext {
         private static String normalizedExpression;
 
 

@@ -12,8 +12,6 @@ import java.util.List;
 
 import static com.shpp.p2p.cs.ohololobov.assignment10.token.Bracket.CLOSING_BRACKET;
 import static com.shpp.p2p.cs.ohololobov.assignment10.token.Bracket.OPENING_BRACKET;
-import static com.shpp.p2p.cs.ohololobov.assignment10.token.Operator.MULTIPLICATION;
-import static com.shpp.p2p.cs.ohololobov.assignment10.token.Operator.POW;
 
 /**
  * The class contains logic of positioning tokens in the list in RPN order
@@ -58,26 +56,32 @@ public class RPNExpressionParser {
         for (int i = 0; i < postfixTokens.size(); i++) {
             currentToken = postfixTokens.get(i);
             currentRank = currentToken.rank();
-            if (currentRank == UnaryMinus.getRank()) {
-                tokensInRPNNotation.add(new Decimal(UnaryMinus.getMultiplicator()));
-                stackBuffer.offerLast(MULTIPLICATION);
-                previousTokenRank = MULTIPLICATION.rank();
-                log.debug("tokensInRPNNotation -1 unary minus: {}", tokensInRPNNotation);
-            } else if (currentToken instanceof Operand operand) {
+            if (currentToken instanceof Operand operand) {
                 tokensInRPNNotation.add(operand);
                 log.debug("tokensInRPNNotation operand: {}", tokensInRPNNotation);
             } else if (currentRank == CLOSING_BRACKET.rank()) {
-                previousTokenRank = transferTokens(tokensInRPNNotation, stackBuffer, currentToken, previousTokenRank);
+                previousTokenRank = transferIfBrackets(tokensInRPNNotation, stackBuffer, previousTokenRank);
+                Validator.isValidBracketsNumber(previousTokenRank);
+                log.info("Removing token: {}", stackBuffer.peekLast());
+                stackBuffer.removeLast();
+                previousTokenRank = transferFunction(tokensInRPNNotation, stackBuffer, currentRank);
                 log.debug("tokensInRPNNotation after bracket transfer: {}", tokensInRPNNotation);
-            } else if (currentRank > previousTokenRank
-                    || currentToken == POW
-                    || previousTokenRank == OPENING_BRACKET.rank()) {
-                stackBuffer.offerLast(currentToken);
+            } else if (currentRank == OPENING_BRACKET.rank()) {
+                stackBuffer.offerLast(OPENING_BRACKET);
                 previousTokenRank = currentRank;
-                log.debug("tokensInRPNNotation after major operator, pow or opening bracket: {}", tokensInRPNNotation);
-            } else {
-                log.debug("tokensInRPNNotation after minor operator: {}", tokensInRPNNotation);
-                previousTokenRank = transferTokens(tokensInRPNNotation, stackBuffer, currentToken, previousTokenRank);
+                log.debug("tokensInRPNNotation after bracket transfer: {}", tokensInRPNNotation);
+            } else if (currentToken instanceof RPNToken rpnToken) {
+                if (currentRank > previousTokenRank
+                        || (!currentToken.isLeftAssociative() && currentRank == previousTokenRank)) {
+                    stackBuffer.offerLast(rpnToken);
+                    previousTokenRank = currentRank;
+                    log.debug("tokensInRPNNotation after major operator, pow or opening bracket: {}", tokensInRPNNotation);
+                } else {
+                    log.debug("tokensInRPNNotation after minor operator: {}", tokensInRPNNotation);
+                    log.info("currentToken: {}", currentToken);
+                    transferIfMathematicalOperation(tokensInRPNNotation, stackBuffer, rpnToken, currentRank);
+                    previousTokenRank = currentRank;
+                }
             }
             log.debug("stack : {}", stackBuffer);
         }
@@ -86,32 +90,6 @@ public class RPNExpressionParser {
         }
 
         return tokensInRPNNotation;
-    }
-
-    /**
-     * The method transfer tokens from stackBuffer to list of RPNTokens in RPN order
-     *
-     * @param tokensInRPNNotation list of RPNTokens in RPN order
-     * @param stackBuffer         supporting buffer of operation and brackets for parsing in RPN
-     * @param currentToken        token to pars
-     * @param previousTokenRank   priority rank of operation in mathematical notation
-     * @return rank of currentToken
-     */
-    private int transferTokens(List<RPNToken> tokensInRPNNotation, Deque<Token> stackBuffer, Token currentToken, int previousTokenRank) {
-        int currentRank = currentToken.rank();
-        log.info("currentToken: {}", currentToken);
-        if (currentToken instanceof RPNToken rpnToken) {
-            transferIfMathematicalOperation(tokensInRPNNotation, stackBuffer, rpnToken, currentRank);
-
-        } else if (currentRank == Bracket.CLOSING_BRACKET.rank()) {
-            previousTokenRank = transferIfBrackets(tokensInRPNNotation, stackBuffer, previousTokenRank);
-            Validator.isValidBracketsNumber(previousTokenRank);
-            log.info("Removing token: {}", stackBuffer.peekLast());
-            stackBuffer.removeLast();
-            currentRank = transferFunction(tokensInRPNNotation, stackBuffer, currentRank);
-        }
-
-        return currentRank;
     }
 
     /**
@@ -130,7 +108,7 @@ public class RPNExpressionParser {
         } else if (!stackBuffer.isEmpty()) {
             currentRank = stackBuffer.getLast().rank();
         } else {
-            currentRank = Integer.MIN_VALUE;
+            currentRank = 0;
         }
         log.debug("tokensInRPNNotation : {}", tokensInRPNNotation);
         return currentRank;
@@ -150,7 +128,7 @@ public class RPNExpressionParser {
      */
     private static int transferIfBrackets(List<RPNToken> tokensInRPNNotation, Deque<Token> stackBuffer, int previousTokenRank) {
         log.debug("stack: {}", stackBuffer);
-        while (previousTokenRank < OPENING_BRACKET.rank()) {
+        while (previousTokenRank != OPENING_BRACKET.rank()) {
             log.info("previousToken: {}", stackBuffer.peekLast());
             transferToken(stackBuffer, tokensInRPNNotation);
             if (!stackBuffer.isEmpty()) {
@@ -160,6 +138,7 @@ public class RPNExpressionParser {
             }
             log.debug("tokensInRPNNotation: {}", tokensInRPNNotation);
         }
+        log.info("previousToken: {}", stackBuffer.peekLast());
 
         return previousTokenRank;
     }
@@ -177,7 +156,13 @@ public class RPNExpressionParser {
     private static void transferIfMathematicalOperation(List<RPNToken> tokensInRPNNotation, Deque<Token> stackBuffer, RPNToken currentToken, int currentRank) {
         log.debug("stack: {}", stackBuffer);
         transferToken(stackBuffer, tokensInRPNNotation);
-        while (!stackBuffer.isEmpty() && stackBuffer.peekLast().rank() != OPENING_BRACKET.rank() && stackBuffer.peekLast() != null && stackBuffer.peekLast().rank() >= currentRank) {
+        Token lastTokenInStack;
+        int lastTokenRank;
+        while (!stackBuffer.isEmpty()
+                && (lastTokenInStack =stackBuffer.peekLast()) != null
+                && (lastTokenRank=lastTokenInStack.rank()) != OPENING_BRACKET.rank()
+                && (lastTokenRank > currentRank||lastTokenRank == currentRank&&lastTokenInStack.isLeftAssociative())
+        ) {
             transferToken(stackBuffer, tokensInRPNNotation);
             log.debug("tokensInRPNNotation  {}", tokensInRPNNotation);
         }

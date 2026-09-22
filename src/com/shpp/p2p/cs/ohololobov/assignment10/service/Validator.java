@@ -11,13 +11,14 @@ import org.eclipse.collections.impl.list.mutable.primitive.CharArrayList;
 import java.io.IOException;
 import java.util.List;
 
+import static com.shpp.p2p.cs.ohololobov.assignment10.token.Bracket.OPENING_BRACKET;
+
 /**
  * The class contains validation of expression and variables and their connection
  */
 public class Validator {
     public static final String VARIABLE_DECIMAL_REG_EX = "-?[0-9]+(\\" + AppConfig.DECIMAL_SEPARATOR + "[0-9]+(E(-)?[0-9]+)?)?";
     public static final int VALID_EQUALITY_ARRAY_LENGTH = 2;
-    public static final int RANK_OF_OPENING_BRACKET = 7;
     public static final String START_END_ILLEGAL_ARGUMENT_TEMPLATE = "Illegal argument \"%s\" at %s of expression \"%s\"";
     public static final String NO_ARGUMENTS_IN_MAIN_ARGS_MSG = "There is no arguments in main()";
     public static final String INCORRECT_VARIABLE_EQUALITY_MSG = "Incorrect variable equality";
@@ -28,7 +29,6 @@ public class Validator {
     public static final String MISSING_VARIABLE_MSG = "Missing variable(s): %s. Enter correct program arguments.";
     public static final String NO_VARIABLES_FOR_SUBSTITUTION_EXCEPTION_TEMPLATE = "Expected %s variables for substitution, but there are none";
     public static final int VALID_VARIABLE_NAME_LENGTH = 1;
-    public static final String INVALID_VARIABLES_VALUES_QUANTITIES = "Quantities of values of different variables is not same. Enter correct number of values each variable";
     public static final String INVALID_NUMBER_OF_BRACKETS = "Invalid number of brackets";
 
 
@@ -65,7 +65,7 @@ public class Validator {
                 missedVariables.add(key);
             }
         }
-//
+
         if (!missedVariables.isEmpty())
             throw new MissingVariableException(String.format(MISSING_VARIABLE_MSG, missedVariables));
     }
@@ -79,7 +79,7 @@ public class Validator {
     }
 
     public static void isValidBracketsNumber(int rankOfToken) {
-        if (rankOfToken != RANK_OF_OPENING_BRACKET) {
+        if (rankOfToken != OPENING_BRACKET.rank()) {
             throw new RuntimeException(ILLEGAL_NUMBER_OF_BRACKETS_MSG);
         }
     }
@@ -87,16 +87,6 @@ public class Validator {
     public static void validateVariablesAbsence(MutableCharIntMap variablesInExpression, List<String> rawVariablesEqualities) {
         if (rawVariablesEqualities == null && variablesInExpression != null) {
             throw new IllegalArgumentException(String.format(NO_VARIABLES_FOR_SUBSTITUTION_EXCEPTION_TEMPLATE, variablesInExpression.size()));
-        }
-    }
-
-    public static void validateVariableValuesQuantities(MutableDoubleList[] variablesValues) {
-        MutableDoubleList variableValues = variablesValues[0];
-        for (int i = 1; i < variablesValues.length; i++) {
-            if (variableValues.size() != variablesValues[i].size()) {
-                throw new IllegalArgumentException(INVALID_VARIABLES_VALUES_QUANTITIES);
-            }
-            variableValues = variablesValues[i];
         }
     }
 

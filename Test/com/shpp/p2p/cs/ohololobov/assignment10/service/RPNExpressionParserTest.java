@@ -63,25 +63,23 @@ class RPNExpressionParserTest {
                 ),
                 Arguments.of("-(30/5)",
                         List.of(
-                                new Decimal(-1),
                                 new Decimal(30),
                                 new Decimal(5),
                                 Operator.DIVISION,
-                                Operator.MULTIPLICATION
+                                Operator.UNARY_MINUS
                         )
                 ),
                 Arguments.of("-(3*a/(5+cos(60)))",
                         List.of(
-                                new Decimal(-1),
                                 new Decimal(3),
                                 new Variable('a', 0),
+                                Operator.MULTIPLICATION,
                                 new Decimal(5),
                                 new Decimal(60),
                                 Function.COS,
                                 Operator.PLUS,
                                 Operator.DIVISION,
-                                Operator.MULTIPLICATION,
-                                Operator.MULTIPLICATION
+                                Operator.UNARY_MINUS
                         )
                 )
         );

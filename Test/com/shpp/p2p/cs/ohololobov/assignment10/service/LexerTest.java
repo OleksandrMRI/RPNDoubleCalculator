@@ -38,7 +38,7 @@ class LexerTest {
                 ),
                 Arguments.of("-(30/5)",
                         List.of(
-                                UnaryMinus.getInstance(),
+                                Operator.UNARY_MINUS,
                                 Bracket.OPENING_BRACKET,
                                 new Decimal(30),
                                 Operator.DIVISION,
@@ -48,7 +48,7 @@ class LexerTest {
                 ),
                 Arguments.of("-(3*a/(5+cos(60)))",
                         List.of(
-                                UnaryMinus.getInstance(),
+                                Operator.UNARY_MINUS,
                                 Bracket.OPENING_BRACKET,
                                 new Decimal(3),
                                 Operator.MULTIPLICATION,

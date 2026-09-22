@@ -6,12 +6,13 @@ import java.util.List;
  * ENUM contains opening and closing brackets although logic of handling of ENUM`s objects
  */
 public enum Bracket implements Token {
-    OPENING_BRACKET('(', 7) {
+    OPENING_BRACKET('(',Rank.OPENING_BRACKET.rank()) {
         /**
          * the method validate next char after opening bracket
          * @param expression     linear representation of char
          * @param charPosition     index of next char in expression
          */
+        @Override
         public void validateNextChar(String expression, int charPosition) {
             char nextChar = expression.charAt(charPosition);
             if (nextChar != '-' && !Character.isLetter(nextChar) && !Character.isDigit(nextChar) && nextChar != '(')
@@ -20,18 +21,18 @@ public enum Bracket implements Token {
 
 
     },
-    CLOSING_BRACKET(')', 0) {
+    CLOSING_BRACKET(')',Rank.CLOSING_BRACKET.rank()) {
         /**
          * the method validate next char after closing bracket
          * @param expression     linear representation of char
          * @param charPosition     index of next char in expression
          */
+        @Override
         public void validateNextChar(String expression, int charPosition) {
             char nextChar = expression.charAt(charPosition);
             if (Character.isLetter(nextChar) || Character.isDigit(nextChar) || nextChar == OPENING_BRACKET.value)
                 Token.throwInvalidNextCharException(nextChar, expression, charPosition);
         }
-
     };
 
     /**
@@ -73,6 +74,15 @@ public enum Bracket implements Token {
         return this.rank;
     }
 
+    /**
+     * The method is uses to getting association of SimpleMathOperator
+     *
+     * @return true if operator is left-associative
+     */
+    @Override
+    public boolean isLeftAssociative() {
+        return true;
+    }
     /**
      * The method validate next char in expression and throw expression if structure of expression is invalid.
      *

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Math.*;
+
 /**
  * This enum contains instances corresponding to mathematical functions processing with one operand,
  * as well as their values priority rank, logic of their executing and using
@@ -17,39 +19,45 @@ public enum Function implements FunctionCalculated, RPNToken {
     SIN("sin", Math::sin),
     COS("cos", Math::cos),
     TAN("tan", Math::tan),
-    CTAN("ctan", arg -> Math.tan(90 - arg)),
+    CTAN("ctan", arg -> tan(PI / 2 - arg)),
     ATAN("atan", Math::atan),
-    ACTAN("actan", arg -> Math.PI - Math.atan(arg)),
     ASIN("asin", Math::asin),
     SQRT("sqrt", Math::sqrt),
     LOG10("log10", Math::log10),
-    LOG2("log2", arg -> Math.log10(arg) / Math.log10(2.0));
+    LOG2("log2", arg -> log10(arg) / log10(2.0));
     /**
      * minimal number of operand in stack for function during calculating expression
      */
     public static final int VALID_PRECEDING_OPERANDS_NUMBER = 1;
-    public static final String INVALID_TAN_OR_CTAN_VALUE_MSG = "Invalid key of argument of tan or ctan";
     public static final String ILLEGAL_ARGUMENT_OF_LOGARITHM_MSG = "Illegal argument of logarithm";
     public static final String UNEXPECTED_TOKEN_IN_EXPRESSION_MSG = "Unexpected token \"%s\" in expression \"%s\" at position %s";
     private static final Logger log = LoggerFactory.getLogger(Function.class);
 
     /**
-     * String key of OneArgumentFunction instance
-     */
-    private final String key;
-    /**
-     * Value of priority rank during calculating the mathematical expression
-     */
-    private static final int rank = 6;
-    /**
-     * functional interface for definition of executable operation of OneArgumentFunction instance
-     */
-    private final FunctionCalculated functionCalculated;
-    /**
      * HashMap with values of OneArgumentFunction instances as keys
      * and corresponding OneArgumentFunction instance as values
      */
     private static HashMap<String, Function> mathFunctionHashMap;
+
+    /**
+     * String key of OneArgumentFunction instance
+     */
+    private final String key;
+
+    /**
+     * Value of priority rank during calculating the mathematical expression
+     */
+    private static final int rank = Rank.FUNCTION.rank();
+
+    /**
+     * boolean shows operator associativity: left-associative - true and right-associative - false
+     */
+    private final boolean isLeftAssociative;
+
+    /**
+     * functional interface for definition of executable operation of OneArgumentFunction instance
+     */
+    private final FunctionCalculated functionCalculated;
 
     /**
      * constructor of OneArgumentFunction
@@ -59,6 +67,7 @@ public enum Function implements FunctionCalculated, RPNToken {
      */
     Function(String key, FunctionCalculated functionCalculated) {
         this.key = key;
+        this.isLeftAssociative = true;
         this.functionCalculated = functionCalculated;
     }
 
@@ -123,7 +132,6 @@ public enum Function implements FunctionCalculated, RPNToken {
         throw new IllegalArgumentException(String.format(UNEXPECTED_TOKEN_IN_EXPRESSION_MSG, tokenValue, expressionToPars, currentIndex));
     }
 
-
     /**
      * getter for OneArgumentFunction instance priority rank field
      *
@@ -132,6 +140,16 @@ public enum Function implements FunctionCalculated, RPNToken {
     @Override
     public int rank() {
         return rank;
+    }
+
+    /**
+     * The method is uses to getting association of SimpleMathOperator
+     *
+     * @return true if operator is left-associative
+     */
+    @Override
+    public boolean isLeftAssociative() {
+        return this.isLeftAssociative;
     }
 
     /**
@@ -191,7 +209,6 @@ public enum Function implements FunctionCalculated, RPNToken {
      */
     @Override
     public double calculate(double arg) {
-        validateTanAndCtanArgument(this, arg);
         validateLog2AndLog10Argument(this, arg);
         return this.functionCalculated.calculate(arg);
     }
@@ -202,21 +219,8 @@ public enum Function implements FunctionCalculated, RPNToken {
      * @param function TAN or CTAN
      * @param arg      argument of function
      */
-    public void validateTanAndCtanArgument(Function function, double arg) {
-        if (function == TAN && arg % Math.PI == Math.PI / 2
-                || function == CTAN && arg % Math.PI == 0) {
-            throw new IllegalArgumentException(INVALID_TAN_OR_CTAN_VALUE_MSG);
-        }
-    }
-
-    /**
-     * The method checks values of argument of tan and ctan Functions and throw exception if argument invalid ist
-     *
-     * @param function TAN or CTAN
-     * @param arg      argument of function
-     */
     public void validateLog2AndLog10Argument(Function function, double arg) {
-        if ((function == LOG2 || function == LOG10) && arg < 0) {
+        if ((function == LOG2 || function == LOG10) && arg <= 0) {
             throw new IllegalArgumentException(ILLEGAL_ARGUMENT_OF_LOGARITHM_MSG);
         }
     }

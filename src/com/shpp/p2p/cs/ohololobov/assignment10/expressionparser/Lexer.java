@@ -56,7 +56,7 @@ public class Lexer {
     public LexerContext tokenize(String expressionToPars) {
         Validator.validateStartOfExpression(expressionToPars);
         Validator.validateEndOfExpression(expressionToPars);
-        List<Token> tokensListInPostfixNotation = new ArrayList<>();
+        List<Token> tokensListInInfixNotation = new ArrayList<>();
         MutableCharIntMap variablesInExpression = null;
         int currentIndex = 0;
         char currentChar;
@@ -70,7 +70,7 @@ public class Lexer {
             if (Character.isDigit(currentChar)) {
                 log.debug("currentChar in decimal: {}", currentChar);
                 log.debug("currentIndex in decimal: {}", currentIndex);
-                currentIndex = Decimal.addToken(expressionToPars, currentIndex, currentChar, tokensListInPostfixNotation);
+                currentIndex = Decimal.addToken(expressionToPars, currentIndex, currentChar, tokensListInInfixNotation);
             } else if (Character.isLetter(currentChar)) {
                 if (nextIndex == expressionToPars.length() || !Character.isLetter(expressionToPars.charAt(nextIndex))) {
                     log.info("variable = currentChar: {}", currentChar);
@@ -84,35 +84,35 @@ public class Lexer {
                     }
                     log.info("variableInExpression: {}", variablesInExpression);
                     slotIndex = variablesInExpression.get(currentChar);
-                    currentIndex = Variable.addToken(expressionToPars, currentIndex, currentChar, tokensListInPostfixNotation, slotIndex);
+                    currentIndex = Variable.addToken(expressionToPars, currentIndex, currentChar, tokensListInInfixNotation, slotIndex);
                     log.info("slotIndex in Lexer: {}", slotIndex);
                 } else {
-                    currentIndex = Function.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                    currentIndex = Function.addToken(expressionToPars, currentIndex, tokensListInInfixNotation);
                 }
             } else {
                 switch (currentChar) {
                     case '+' ->
-                            currentIndex = PLUS.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                            currentIndex = PLUS.addToken(expressionToPars, currentIndex, tokensListInInfixNotation);
                     case '-' -> {
-                        if (UnaryMinus.isUnaryMinus(expressionToPars, currentIndex)) {
-                            currentIndex = UnaryMinus.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                        if (Operator.isUnaryMinus(expressionToPars, currentIndex)) {
+                            currentIndex = UNARY_MINUS.addToken(expressionToPars, currentIndex, tokensListInInfixNotation);
                         } else {
-                            currentIndex = SUBTRACTION.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                            currentIndex = SUBTRACTION.addToken(expressionToPars, currentIndex, tokensListInInfixNotation);
                         }
                     }
                     case '/' ->
-                            currentIndex = DIVISION.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                            currentIndex = DIVISION.addToken(expressionToPars, currentIndex, tokensListInInfixNotation);
                     case '*' ->
-                            currentIndex = MULTIPLICATION.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                            currentIndex = MULTIPLICATION.addToken(expressionToPars, currentIndex, tokensListInInfixNotation);
                     case '^' ->
-                            currentIndex = POW.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                            currentIndex = POW.addToken(expressionToPars, currentIndex, tokensListInInfixNotation);
                     case '(' -> {
                         bracketCounter++;
-                        currentIndex = OPENING_BRACKET.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                        currentIndex = OPENING_BRACKET.addToken(expressionToPars, currentIndex, tokensListInInfixNotation);
                     }
                     case ')' -> {
                         bracketCounter--;
-                        currentIndex = CLOSING_BRACKET.addToken(expressionToPars, currentIndex, tokensListInPostfixNotation);
+                        currentIndex = CLOSING_BRACKET.addToken(expressionToPars, currentIndex, tokensListInInfixNotation);
                     }
                     default -> {
 
@@ -121,7 +121,7 @@ public class Lexer {
                 }
             }
 
-            log.debug("tokensListInPostfixNotation: {}", tokensListInPostfixNotation);
+            log.debug("tokensListInInfixNotation: {}", tokensListInInfixNotation);
             log.debug("currentIndex: {}", currentIndex);
             log.info("bracketCounter inside: {}", bracketCounter);
             Validator.validateBrackets(bracketCounter, isCheckingAfterParsing);
@@ -130,8 +130,8 @@ public class Lexer {
         isCheckingAfterParsing = true;
         log.info("bracketCounter outside: {}", bracketCounter);
         Validator.validateBrackets(bracketCounter, isCheckingAfterParsing);
-        log.debug("tokensListInPostfixNotation: {}", tokensListInPostfixNotation);
-        return new LexerContext(tokensListInPostfixNotation, variablesInExpression);
+        log.debug("tokensListInInfixNotation: {}", tokensListInInfixNotation);
+        return new LexerContext(tokensListInInfixNotation, variablesInExpression);
     }
 
     /**

@@ -7,7 +7,7 @@ public sealed interface Operand extends RPNToken permits Decimal, Variable {
     /**
      * value of rank of operands
      */
-    int rank = -2;
+    int rank = Rank.OPERAND.rank();
 
     /**
      * getter for rank instance of operand
@@ -17,6 +17,12 @@ public sealed interface Operand extends RPNToken permits Decimal, Variable {
     @Override
     default int rank() {
         return rank;
+    }
+
+
+    @Override
+    default boolean isLeftAssociative() {
+        return false;
     }
 
     /**

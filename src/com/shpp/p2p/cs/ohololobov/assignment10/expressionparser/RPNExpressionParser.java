@@ -54,7 +54,7 @@ public class RPNExpressionParser {
         int currentRank;
         int previousTokenRank = Integer.MIN_VALUE;
         for (int i = 0; i < postfixTokens.size(); i++) {
-            if(stackBuffer.isEmpty()){
+            if (stackBuffer.isEmpty()) {
                 previousTokenRank = Integer.MIN_VALUE;
             }
             currentToken = postfixTokens.get(i);
@@ -162,9 +162,9 @@ public class RPNExpressionParser {
         Token lastTokenInStack;
         int lastTokenRank;
         while (!stackBuffer.isEmpty()
-                && (lastTokenInStack =stackBuffer.peekLast()) != null
-                && (lastTokenRank=lastTokenInStack.rank()) != OPENING_BRACKET.rank()
-                && (lastTokenRank > currentRank||lastTokenRank == currentRank&&lastTokenInStack.isLeftAssociative())
+                && (lastTokenInStack = stackBuffer.peekLast()) != null
+                && (lastTokenRank = lastTokenInStack.rank()) != OPENING_BRACKET.rank()
+                && (lastTokenRank > currentRank || lastTokenRank == currentRank && lastTokenInStack.isLeftAssociative())
         ) {
             transferToken(stackBuffer, tokensInRPNNotation);
             log.debug("tokensInRPNNotation  {}", tokensInRPNNotation);

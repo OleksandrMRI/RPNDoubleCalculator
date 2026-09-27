@@ -7,7 +7,7 @@ import com.shpp.p2p.cs.ohololobov.assignment10.dto.ResultsDTO;
 import java.io.IOException;
 
 /**
- * This is main class of program that calculate result of lineal representation of mathematical expression
+ * This class is the program's entry point, that calculate result of lineal representation of mathematical expression
  * and variable values if any are present in the expression.
  * in this implementation:
  * Program pars expression to reverse Polish notation (RPN),

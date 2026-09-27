@@ -24,8 +24,8 @@ import java.util.Scanner;
 public class Graph {
     public static final Map<String, double[]> expressionsDataBase = new HashMap<>();
     private static final String VARIABLE_NAME = "a";
-    private static final String EXPRESSION = String.format("sin(%s/50)*100", VARIABLE_NAME);
-    private static final int POINTS_NUMBER = 1000;
+    private static final String DEFAULT_EXPRESSION = String.format("sin(%s/50)*100", VARIABLE_NAME);
+    private static final int POINTS_NUMBER = 100;
     private static final double START_POINT_OFFSET_X = -300;
     private static final double END_POINT_OFFSET_X = 300;
     private static final String REQUEST_TO_USER = "Enter mathematical expression: ";
@@ -109,14 +109,14 @@ public class Graph {
         double[] offsetYValues;
         try {
             offsetYValues = getOffsetYValuesArray(normalizedExpression, offsetXValues);
-            GraphContext.normalizedExpression = EXPRESSION;
+            GraphContext.normalizedExpression = normalizedExpression;
         } catch (Exception e) {
             System.out.printf(INVALID_EXPRESSION_MSG, normalizedExpression);
             if (defaultValue == null) {
-                defaultValue = getOffsetYValuesArray(EXPRESSION, offsetXValues);
+                defaultValue = getOffsetYValuesArray(DEFAULT_EXPRESSION, offsetXValues);
             }
             offsetYValues = defaultValue;
-            GraphContext.normalizedExpression = EXPRESSION;
+            GraphContext.normalizedExpression = DEFAULT_EXPRESSION;
         }
         return offsetYValues;
     }

@@ -54,6 +54,9 @@ public class RPNExpressionParser {
         int currentRank;
         int previousTokenRank = Integer.MIN_VALUE;
         for (int i = 0; i < postfixTokens.size(); i++) {
+            if(stackBuffer.isEmpty()){
+                previousTokenRank = Integer.MIN_VALUE;
+            }
             currentToken = postfixTokens.get(i);
             currentRank = currentToken.rank();
             if (currentToken instanceof Operand operand) {
